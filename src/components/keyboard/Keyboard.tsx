@@ -51,6 +51,8 @@ export const Keyboard = ({
     }
   }, [onEnter, onDelete, onChar])
 
+
+  // TODO: Change keyboard values
   return (
     <div>
       <div className="flex justify-center mb-1">

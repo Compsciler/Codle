@@ -6,6 +6,7 @@ type Props = {
   handleClose: () => void
 }
 
+// TODO: Change rules to match game
 export const InfoModal = ({ isOpen, handleClose }: Props) => {
   return (
     <BaseModal title="How to play" isOpen={isOpen} handleClose={handleClose}>
@@ -61,7 +62,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         This is an open source version of the word guessing game we all know and
         love -{' '}
         <a
-          href="https://github.com/cwackerfuss/react-wordle"
+          href="https://github.com/Compsciler/Codle"
           className="underline font-bold"
         >
           check out the code here
