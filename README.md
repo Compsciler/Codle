@@ -1,6 +1,6 @@
-# React Wordle
+# Codle
 
-This is a clone project of the popular word guessing game we all know and love. Made using React, Typescript, and Tailwind.
+This is a clone project of a [clone project](https://github.com/cwackerfuss/react-wordle) of the popular word guessing game we all know and love. Made using React, Typescript, and Tailwind.
 
 [**Try out the demo!**](https://reactle.vercel.app/)
 
