@@ -1,15 +1,19 @@
 import { WORDS } from '../constants/wordlist'
-import { VALID_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
+import { isValidKey } from '../components/keyboard/Keyboard'
+import { MAX_WORD_LENGTH } from '../constants/settings'
 
 export const isWordInWordList = (word: string) => {
-  // TODO: Create script to check if guess is valid instead of using VALID_GUESSES
   return (
-    WORDS.includes(localeAwareLowerCase(word)) ||
-    VALID_GUESSES.includes(localeAwareLowerCase(word))
+    WORDS.includes(word) ||
+    isValidWord(word)
   )
+}
+
+export const isValidWord = (word: string) => {
+  return word.length == MAX_WORD_LENGTH && word.split('').every(isValidKey);
 }
 
 export const isWinningWord = (word: string) => {

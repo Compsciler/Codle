@@ -1,3 +1,3 @@
 export const WORDS = [
-  ';a++)',
+  ';A++)',
 ]

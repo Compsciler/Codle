@@ -3,6 +3,7 @@ import { Key } from './Key'
 import { useEffect } from 'react'
 import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
 import { localeAwareUpperCase } from '../../lib/words'
+import { VALID_CHARS } from '../../constants/validChars'
 
 type Props = {
   onChar: (value: string) => void
@@ -39,8 +40,7 @@ export const Keyboard = ({
         onDelete()
       } else {
         const key = localeAwareUpperCase(e.key)
-        // TODO: check this test if the range works with non-english letters
-        if (key.length === 1 && key >= 'A' && key <= 'Z') {
+        if (isValidKey(key)) {
           onChar(key)
         }
       }
@@ -51,7 +51,6 @@ export const Keyboard = ({
     }
   }, [onEnter, onDelete, onChar])
 
-  // TODO: Change keyboard values
   return (
     <div>
       <div className="flex justify-center mb-1">
@@ -95,4 +94,11 @@ export const Keyboard = ({
       </div>
     </div>
   )
+}
+
+export const isValidKey = (key: string) => {
+  if (key.length != 1) {
+    return false
+  }
+  return VALID_CHARS.includes(key)
 }
