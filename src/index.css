@@ -189,3 +189,7 @@ svg.cursor-pointer:hover {
     transform: translate(0, 0);
   }
 }
+
+/* TODO: Add classes */
+.info-modal {
+}

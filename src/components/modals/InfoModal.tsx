@@ -11,51 +11,84 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
   return (
     <BaseModal title="How to play" isOpen={isOpen} handleClose={handleClose}>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        Guess the word (code snippet) in 6 tries. After each guess, the color of the tiles will
+        Guess the "word" (code snippet) in 6 tries. After each guess, the color of the tiles will
         change to show how close your guess was to the word.
       </p>
+      <br />
+      <p className="text-sm text-gray-500 dark:text-gray-300">
+        The word is taken from a substring within a line of code. 
+        However, the code is first condensed:
+        <ol>
+          <li>1. All whitespace is removed</li>
+          <li>2. Consecutive alphanumeric/underscore characters are replaced by a single 'A'</li>
+        </ol>
+        The chosen word will be <strong>special character-heavy</strong> (at most 1 'A').
+        You will be given the repository or general context from where the code was from,
+        as well as the programming language.
+      </p>
+      <br />
+      <p className="text-sm text-gray-500 dark:text-gray-300">
+        For example, let the line of code be <pre>console.log("H3llo world_");</pre>
+        This would condense down to <pre>A.A("A");</pre>
+        with hint "Greetings (JavaScript)."
+      </p>
+      <p className="text-sm text-gray-500 dark:text-gray-300">
+        The following word can be taken from this string: 
+      </p>
+      <div className="flex justify-center mb-1 mt-4">
+        <Cell value="(" />
+        <Cell value="&quot;" />
+        <Cell value="A" />
+        <Cell value="&quot;" />
+        <Cell value=")" />
+      </div>
+
+      {/* <br /> -*/}
+      <p className="text-sm text-gray-500 dark:text-gray-300">
+        Sample guesses for this word:
+      </p>
 
       <div className="flex justify-center mb-1 mt-4">
         <Cell
           isRevealing={true}
           isCompleted={true}
-          value="W"
+          value="("
           status="correct"
         />
-        <Cell value="E" />
+        <Cell value="*" />
         <Cell value="A" />
-        <Cell value="R" />
-        <Cell value="Y" />
+        <Cell value=":" />
+        <Cell value=":" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The letter W is in the word and in the correct spot.
+        The character ( is in the word and in the correct spot.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
-        <Cell value="P" />
-        <Cell value="I" />
+        <Cell value="." />
         <Cell
           isRevealing={true}
           isCompleted={true}
-          value="L"
+          value="A"
           status="present"
         />
-        <Cell value="O" />
-        <Cell value="T" />
+        <Cell value="/" />
+        <Cell value="=" />
+        <Cell value=";" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The letter L is in the word but in the wrong spot.
+        The character A is in the word but in the wrong spot.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
-        <Cell value="V" />
-        <Cell value="A" />
-        <Cell value="G" />
-        <Cell isRevealing={true} isCompleted={true} value="U" status="absent" />
-        <Cell value="E" />
+        <Cell value="<" />
+        <Cell value="{" />
+        <Cell value="-" />
+        <Cell isRevealing={true} isCompleted={true} value="]" status="absent" />
+        <Cell value=")" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The letter U is not in the word in any spot.
+        The character ] is not in the word in any spot.
       </p>
 
       <p className="mt-6 italic text-sm text-gray-500 dark:text-gray-300">
