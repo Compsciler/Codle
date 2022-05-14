@@ -6,7 +6,6 @@ type Props = {
   handleClose: () => void
 }
 
-// TODO: Change rules to match game
 export const InfoModal = ({ isOpen, handleClose }: Props) => {
   return (
     <BaseModal title="How to play" isOpen={isOpen} handleClose={handleClose}>
