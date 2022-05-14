@@ -11,25 +11,29 @@ import {
   WORD_NOT_FOUND_MESSAGE,
   CORRECT_WORD_MESSAGE,
   HARD_MODE_ALERT_MESSAGE,
+  DISCOURAGE_INAPP_BROWSER_TEXT,
 } from './constants/strings'
 import {
-  MAX_WORD_LENGTH,
   MAX_CHALLENGES,
   REVEAL_TIME_MS,
-  GAME_LOST_INFO_DELAY,
   WELCOME_INFO_MODAL_MS,
+  DISCOURAGE_INAPP_BROWSERS,
 } from './constants/settings'
 import {
   isWordInWordList,
   isWinningWord,
-  solution,
+  isWinningWordOfDay,
+  solution as solutionOfDay,
   findFirstUnusedReveal,
   unicodeLength,
+  solutionIndex as solutionIndexOfDay,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
   saveGameStateToLocalStorage,
+  loadGameOfDayStateFromLocalStorage,
+  saveGameOfDayStateToLocalStorage,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
 } from './lib/localStorage'
@@ -39,8 +43,40 @@ import './App.css'
 import { AlertContainer } from './components/alerts/AlertContainer'
 import { useAlert } from './context/AlertContext'
 import { Navbar } from './components/navbar/Navbar'
+import { isInAppBrowser } from './lib/browser'
+
+import scoreService from './services/scores'
+import { generateEmojiGrid, getEmojiTiles } from './lib/share'
+
+import { useMatch } from 'react-router-dom'
+import { getWordBySolutionIndex } from './lib/words'
+import { exampleIds } from './constants/exampleIds'
 
 function App() {
+  const isPlayingDaily = useMatch('/') !== null
+  const exampleMatch = useMatch('/examples/:id')
+  const isPlayingExample = exampleMatch !== null
+  let exampleSolution = undefined
+  let exampleSolutionIndex = undefined
+  let isReturningExampleNotFoundPage = false
+  if (exampleMatch) {
+    const id = parseInt(exampleMatch.params.id!)
+    if (!exampleIds.includes(id)) {
+      isReturningExampleNotFoundPage = true
+    }
+    if (!Number.isNaN(id) && id >= 0) {
+      const exampleSolutionAndIndex = getWordBySolutionIndex(id)
+      exampleSolution = exampleSolutionAndIndex.solution
+      exampleSolutionIndex = exampleSolutionAndIndex.solutionIndex
+    }
+  }
+  const solution =
+    exampleSolution !== undefined ? exampleSolution : solutionOfDay
+  const solutionIndex =
+    exampleSolutionIndex !== undefined
+      ? exampleSolutionIndex
+      : solutionIndexOfDay
+
   const prefersDarkMode = window.matchMedia(
     '(prefers-color-scheme: dark)'
   ).matches
@@ -65,9 +101,22 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+
+  const [guessesOfDay, setGuessesOfDay] = useState<string[]>(() => {
+    const loaded = loadGameOfDayStateFromLocalStorage()
+    if (!loaded) {
+      return []
+    }
+    return loaded.guesses
+  })
   const [guesses, setGuesses] = useState<string[]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
+    const loaded = isPlayingDaily
+      ? loadGameOfDayStateFromLocalStorage()
+      : loadGameStateFromLocalStorage()
     if (loaded?.solution !== solution) {
+      if (isPlayingDaily) {
+        setGuessesOfDay([])
+      }
       return []
     }
     const gameWasWon = loaded.guesses.includes(solution)
@@ -99,7 +148,16 @@ function App() {
         setIsInfoModalOpen(true)
       }, WELCOME_INFO_MODAL_MS)
     }
-  }, [])
+  })
+
+  useEffect(() => {
+    DISCOURAGE_INAPP_BROWSERS &&
+      isInAppBrowser() &&
+      showErrorAlert(DISCOURAGE_INAPP_BROWSER_TEXT, {
+        persist: false,
+        durationMs: 7000,
+      })
+  }, [showErrorAlert])
 
   useEffect(() => {
     if (isDarkMode) {
@@ -141,12 +199,18 @@ function App() {
   useEffect(() => {
     saveGameStateToLocalStorage({ guesses, solution })
   }, [guesses])
+  useEffect(() => {
+    if (!isPlayingDaily) {
+      return
+    }
+    saveGameOfDayStateToLocalStorage({ guesses, solution })
+  }, [guessesOfDay])
 
   useEffect(() => {
     if (isGameWon) {
       const winMessage =
         WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      const delayMs = REVEAL_TIME_MS * MAX_WORD_LENGTH
+      const delayMs = REVEAL_TIME_MS * solution.length
 
       showSuccessAlert(winMessage, {
         delayMs,
@@ -157,13 +221,13 @@ function App() {
     if (isGameLost) {
       setTimeout(() => {
         setIsStatsModalOpen(true)
-      }, GAME_LOST_INFO_DELAY)
+      }, (solution.length + 1) * REVEAL_TIME_MS)
     }
   }, [isGameWon, isGameLost, showSuccessAlert])
 
   const onChar = (value: string) => {
     if (
-      unicodeLength(`${currentGuess}${value}`) <= MAX_WORD_LENGTH &&
+      unicodeLength(`${currentGuess}${value}`) <= solution.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
@@ -182,14 +246,14 @@ function App() {
       return
     }
 
-    if (!(unicodeLength(currentGuess) === MAX_WORD_LENGTH)) {
+    if (!(unicodeLength(currentGuess) === solution.length)) {
       setCurrentRowClass('jiggle')
       return showErrorAlert(NOT_ENOUGH_LETTERS_MESSAGE, {
         onClose: clearCurrentRowClass,
       })
     }
 
-    if (!isWordInWordList(currentGuess)) {
+    if (!isWordInWordList(currentGuess, solution)) {
       setCurrentRowClass('jiggle')
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
         onClose: clearCurrentRowClass,
@@ -198,7 +262,11 @@ function App() {
 
     // enforce hard mode - all guesses must contain all previously revealed letters
     if (isHardMode) {
-      const firstMissingReveal = findFirstUnusedReveal(currentGuess, guesses)
+      const firstMissingReveal = findFirstUnusedReveal(
+        currentGuess,
+        guesses,
+        solution
+      )
       if (firstMissingReveal) {
         setCurrentRowClass('jiggle')
         return showErrorAlert(firstMissingReveal, {
@@ -212,32 +280,88 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
-    }, REVEAL_TIME_MS * MAX_WORD_LENGTH)
+    }, REVEAL_TIME_MS * solution.length)
 
-    const winningWord = isWinningWord(currentGuess)
+    const winningWord = isPlayingExample
+      ? isWinningWord(currentGuess, solution)
+      : isWinningWordOfDay(currentGuess)
 
     if (
-      unicodeLength(currentGuess) === MAX_WORD_LENGTH &&
+      unicodeLength(currentGuess) === solution.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
+      const guessesIncludingCurrent = guesses.concat(currentGuess)
+
       setGuesses([...guesses, currentGuess])
+      if (isPlayingDaily) {
+        setGuessesOfDay([...guesses, currentGuess])
+      }
       setCurrentGuess('')
 
       if (winningWord) {
-        setStats(addStatsForCompletedGame(stats, guesses.length))
+        if (!isPlayingExample) {
+          setStats(addStatsForCompletedGame(stats, guesses.length))
+        }
+        sendScore(
+          solutionIndex,
+          solution,
+          guessesIncludingCurrent,
+          false,
+          isHardMode
+        )
         return setIsGameWon(true)
       }
 
       if (guesses.length === MAX_CHALLENGES - 1) {
-        setStats(addStatsForCompletedGame(stats, guesses.length + 1))
+        if (!isPlayingExample) {
+          setStats(addStatsForCompletedGame(stats, guesses.length + 1))
+        }
+        sendScore(
+          solutionIndex,
+          solution,
+          guessesIncludingCurrent,
+          true,
+          isHardMode
+        )
         setIsGameLost(true)
         showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
           persist: true,
-          delayMs: REVEAL_TIME_MS * MAX_WORD_LENGTH + 1,
+          delayMs: REVEAL_TIME_MS * solution.length + 1,
         })
       }
     }
+  }
+
+  const sendScore = (
+    solutionIndex: number,
+    solution: string,
+    guesses: string[],
+    lost: boolean,
+    isHardMode: boolean
+  ) => {
+    // event.preventDefault()
+    const emojiGrid = generateDefaultEmojiGrid(solution, guesses)
+    const scoreObject = {
+      solutionIndex,
+      solution,
+      guesses,
+      lost,
+      isHardMode,
+      emojiGrid,
+    }
+
+    scoreService.create(scoreObject).then((res) => {
+      console.log(res)
+    })
+  }
+
+  const generateDefaultEmojiGrid = (solution: string, guesses: string[]) => {
+    return generateEmojiGrid(solution, guesses, getEmojiTiles(false, false))
+  }
+
+  if (isReturningExampleNotFoundPage) {
+    return <h1>ERROR: EXAMPLE NOT FOUND</h1>
   }
 
   return (
@@ -250,6 +374,7 @@ function App() {
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
           <Grid
+            solution={solution}
             guesses={guesses}
             currentGuess={currentGuess}
             isRevealing={isRevealing}
@@ -260,6 +385,7 @@ function App() {
           onChar={onChar}
           onDelete={onDelete}
           onEnter={onEnter}
+          solution={solution}
           guesses={guesses}
           isRevealing={isRevealing}
         />
@@ -270,6 +396,8 @@ function App() {
         <StatsModal
           isOpen={isStatsModalOpen}
           handleClose={() => setIsStatsModalOpen(false)}
+          solution={solution}
+          solutionIndex={solutionIndex}
           guesses={guesses}
           gameStats={stats}
           isGameLost={isGameLost}

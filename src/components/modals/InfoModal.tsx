@@ -18,23 +18,33 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The word is taken from a substring within a line of code. 
         However, the code is first condensed:
-        <ol>
-          <li>1. All whitespace is removed</li>
-          <li>2. Consecutive alphanumeric/underscore characters are replaced by a single 'A'</li>
-        </ol>
+      </p>
+      <ol className="text-sm text-gray-500 dark:text-gray-300">
+        <li>1. All whitespace is removed</li>
+        <li>2. Consecutive alphanumeric/underscore characters are replaced by a single 'A'</li>
+      </ol>
+      <p className="text-sm text-gray-500 dark:text-gray-300">
         The chosen word will be <strong>special character-heavy</strong> (at most 1 'A').
         You will be given the repository or general context from where the code was from,
         as well as the programming language.
       </p>
       <br />
+
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        For example, let the line of code be <pre>console.log("H3llo world_");</pre>
-        This would condense down to <pre>A.A("A");</pre>
+        For example, let the line of code be
+      </p>
+      <pre className="text-sm text-gray-500 dark:text-gray-300">console.log("H3llo world_");</pre>
+      <p className="text-sm text-gray-500 dark:text-gray-300">
+        This would condense down to
+      </p>
+      <pre className="text-sm text-gray-500 dark:text-gray-300">A.A("A");</pre>
+      <p className="text-sm text-gray-500 dark:text-gray-300">
         with hint "Greetings (JavaScript)."
       </p>
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The following word can be taken from this string: 
       </p>
+      
       <div className="flex justify-center mb-1 mt-4">
         <Cell value="(" />
         <Cell value="&quot;" />

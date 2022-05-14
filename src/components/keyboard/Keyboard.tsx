@@ -9,6 +9,7 @@ type Props = {
   onChar: (value: string) => void
   onDelete: () => void
   onEnter: () => void
+  solution: string
   guesses: string[]
   isRevealing?: boolean
 }
@@ -17,10 +18,11 @@ export const Keyboard = ({
   onChar,
   onDelete,
   onEnter,
+  solution,
   guesses,
   isRevealing,
 }: Props) => {
-  const charStatuses = getStatuses(guesses)
+  const charStatuses = getStatuses(solution, guesses)
 
   const onClick = (value: string) => {
     if (value === 'ENTER') {
@@ -97,7 +99,7 @@ export const Keyboard = ({
 }
 
 export const isValidKey = (key: string) => {
-  if (key.length != 1) {
+  if (key.length !== 1) {
     return false
   }
   return VALID_CHARS.includes(key)

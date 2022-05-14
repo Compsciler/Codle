@@ -1,5 +1,5 @@
 import { getGuessStatuses } from './statuses'
-import { solutionIndex, unicodeSplit } from './words'
+import { unicodeSplit } from './words'
 import { GAME_TITLE } from '../constants/strings'
 import { MAX_CHALLENGES } from '../constants/settings'
 import { UAParser } from 'ua-parser-js'
@@ -10,6 +10,8 @@ const browser = parser.getBrowser()
 const device = parser.getDevice()
 
 export const shareStatus = (
+  solution: string,
+  solutionIndex: number,
   guesses: string[],
   lost: boolean,
   isHardMode: boolean,
@@ -21,7 +23,11 @@ export const shareStatus = (
     `${GAME_TITLE} ${solutionIndex} ${
       lost ? 'X' : guesses.length
     }/${MAX_CHALLENGES}${isHardMode ? '*' : ''}\n\n` +
-    generateEmojiGrid(guesses, getEmojiTiles(isDarkMode, isHighContrastMode))
+    generateEmojiGrid(
+      solution,
+      guesses,
+      getEmojiTiles(isDarkMode, isHighContrastMode)
+    )
 
   const shareData = { text: textToShare }
 
@@ -42,10 +48,14 @@ export const shareStatus = (
   }
 }
 
-export const generateEmojiGrid = (guesses: string[], tiles: string[]) => {
+export const generateEmojiGrid = (
+  solution: string,
+  guesses: string[],
+  tiles: string[]
+) => {
   return guesses
     .map((guess) => {
-      const status = getGuessStatuses(guess)
+      const status = getGuessStatuses(solution, guess)
       const splitGuess = unicodeSplit(guess)
 
       return splitGuess
@@ -75,7 +85,7 @@ const attemptShare = (shareData: object) => {
   )
 }
 
-const getEmojiTiles = (isDarkMode: boolean, isHighContrastMode: boolean) => {
+export const getEmojiTiles = (isDarkMode: boolean, isHighContrastMode: boolean) => {
   let tiles: string[] = []
   tiles.push(isHighContrastMode ? '🟧' : '🟩')
   tiles.push(isHighContrastMode ? '🟦' : '🟨')
