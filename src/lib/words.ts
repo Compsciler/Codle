@@ -4,9 +4,13 @@ import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 import { isValidKey } from '../components/keyboard/Keyboard'
 
+const getWords = (wordlist: { solution: string }[]) => {
+  return wordlist.map(wordObj => wordObj.solution)
+}
+
 export const isWordInWordList = (word: string, solution: string) => {
   return (
-    WORDS.includes(word) ||
+    getWords(WORDS).includes(word) ||
     isValidWord(word, solution)
   )
 }
@@ -84,7 +88,9 @@ export const localeAwareUpperCase = (text: string) => {
 
 export const getWordBySolutionIndex = (solutionIndex: number) => {
   return {
-    solution: localeAwareUpperCase(WORDS[solutionIndex % WORDS.length]),
+    solution: localeAwareUpperCase(WORDS[solutionIndex].solution),
+    clue: WORDS[solutionIndex].clue,
+    code: WORDS[solutionIndex].code,
     solutionIndex: solutionIndex,
   }
 }
@@ -108,9 +114,11 @@ export const getWordOfDay = () => {
 
   return {
     solution: solutionAndIndex.solution,
+    clue: solutionAndIndex.clue,
+    code: solutionAndIndex.code,
     solutionIndex: solutionAndIndex.solutionIndex,
     tomorrow: nextDay.valueOf(),
   }
 }
 
-export const { solution, solutionIndex, tomorrow } = getWordOfDay()
+export const { solution, clue, code, solutionIndex, tomorrow } = getWordOfDay()

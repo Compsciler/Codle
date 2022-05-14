@@ -27,6 +27,8 @@ import {
   findFirstUnusedReveal,
   unicodeLength,
   solutionIndex as solutionIndexOfDay,
+  clue as clueOfDay,
+  code as codeOfDay,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -52,11 +54,16 @@ import { useMatch } from 'react-router-dom'
 import { getWordBySolutionIndex } from './lib/words'
 import { exampleIds } from './constants/exampleIds'
 
+import { ClueText } from './components/gametext/ClueText'
+import { SolutionText } from './components/gametext/SolutionText'
+
 function App() {
   const isPlayingDaily = useMatch('/') !== null
   const exampleMatch = useMatch('/examples/:id')
   const isPlayingExample = exampleMatch !== null
   let exampleSolution = undefined
+  let exampleClue = undefined
+  let exampleCode = undefined
   let exampleSolutionIndex = undefined
   let isReturningExampleNotFoundPage = false
   if (exampleMatch) {
@@ -67,11 +74,15 @@ function App() {
     if (!Number.isNaN(id) && id >= 0) {
       const exampleSolutionAndIndex = getWordBySolutionIndex(id)
       exampleSolution = exampleSolutionAndIndex.solution
+      exampleClue = exampleSolutionAndIndex.clue
+      exampleCode = exampleSolutionAndIndex.code
       exampleSolutionIndex = exampleSolutionAndIndex.solutionIndex
     }
   }
   const solution =
     exampleSolution !== undefined ? exampleSolution : solutionOfDay
+  const clue = exampleClue !== undefined ? exampleClue : clueOfDay
+  const code = exampleCode !== undefined ? exampleCode : codeOfDay
   const solutionIndex =
     exampleSolutionIndex !== undefined
       ? exampleSolutionIndex
@@ -88,6 +99,7 @@ function App() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [isSolutionTextOpen, setIsSolutionTextOpen] = useState(false)
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(
@@ -122,12 +134,14 @@ function App() {
     const gameWasWon = loaded.guesses.includes(solution)
     if (gameWasWon) {
       setIsGameWon(true)
+      setIsSolutionTextOpen(true)
     }
     if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
       setIsGameLost(true)
       showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
         persist: true,
       })
+      setIsSolutionTextOpen(true)
     }
     return loaded.guesses
   })
@@ -207,10 +221,10 @@ function App() {
   }, [guessesOfDay])
 
   useEffect(() => {
+    const delayMs = REVEAL_TIME_MS * solution.length
     if (isGameWon) {
       const winMessage =
         WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      const delayMs = REVEAL_TIME_MS * solution.length
 
       showSuccessAlert(winMessage, {
         delayMs,
@@ -222,6 +236,12 @@ function App() {
       setTimeout(() => {
         setIsStatsModalOpen(true)
       }, (solution.length + 1) * REVEAL_TIME_MS)
+    }
+
+    if (isGameWon || isGameLost) {
+      setTimeout(() => {
+        setIsSolutionTextOpen(true)
+      }, delayMs)
     }
   }, [isGameWon, isGameLost, showSuccessAlert])
 
@@ -373,12 +393,18 @@ function App() {
       />
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
+          <ClueText clue={clue} />
           <Grid
             solution={solution}
             guesses={guesses}
             currentGuess={currentGuess}
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
+          />
+          <SolutionText
+            solution={solution}
+            code={code}
+            isGameComplete={isSolutionTextOpen}
           />
         </div>
         <Keyboard

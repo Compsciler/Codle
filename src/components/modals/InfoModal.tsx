@@ -24,7 +24,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </ol>
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The chosen word will be <strong>special character-heavy</strong> (at most 1 'A').
-        You will be given the repository or general context from where the code was from,
+        You will be given a clue to the repository or general context from where the code was from,
         as well as the programming language.
       </p>
       <br />
@@ -38,7 +38,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </p>
       <pre className="text-sm text-gray-500 dark:text-gray-300">A.A("A");</pre>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        with hint "Greetings (JavaScript)."
+        with clue "Greetings (JavaScript)."
       </p>
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The following word can be taken from this string: 
