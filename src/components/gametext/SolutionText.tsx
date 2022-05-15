@@ -18,7 +18,7 @@ const hrStyles = {
   margin: 0,
 }
 
-const classes = "flex justify-center mt-4"
+const classes = "flex justify-center mt-4 dark:text-white"
 
 export const SolutionText = ({ solution, code, isGameComplete }: Props) => {
   return (

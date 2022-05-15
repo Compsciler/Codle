@@ -6,7 +6,7 @@ const styles = {
   fontSize: '18px',
 }
 
-const classes = "flex justify-center mb-4"
+const classes = "flex justify-center mb-4 dark:text-white"
 
 export const ClueText = ({ clue }: Props) => {
   return (
