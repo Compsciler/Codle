@@ -433,6 +433,7 @@ function App() {
           isDarkMode={isDarkMode}
           isHighContrastMode={isHighContrastMode}
           numberOfGuessesMade={guesses.length}
+          isPlayingExample={isPlayingExample}
         />
         <SettingsModal
           isOpen={isSettingsModalOpen}
