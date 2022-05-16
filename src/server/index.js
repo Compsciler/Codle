@@ -11,22 +11,22 @@ const url = process.env.MONGODB_URI
 
 mongoose.connect(url)
 const scoreSchema = new mongoose.Schema({
-    solutionIndex: Number,
-    solution: String,
-    guesses: [String],
-    lost: Boolean,
-    isHardMode: Boolean,
-    emojiGrid: String
+  solutionIndex: Number,
+  solution: String,
+  guesses: [String],
+  lost: Boolean,
+  isHardMode: Boolean,
+  emojiGrid: String
 })
 
 const Score = mongoose.model('Score', scoreSchema)
 
 app.post('/api/scores', (req, res) => {
-    const score = new Score(req.body)
+  const score = new Score(req.body)
 
-    score.save().then(savedScore => {
-        res.json(savedScore)
-    })
+  score.save().then(savedScore => {
+    res.json(savedScore)
+  })
 })
 
 const PORT = process.env.PORT || 3001
