@@ -7,6 +7,7 @@ type Props = {
 }
 
 export const InfoModal = ({ isOpen, handleClose }: Props) => {
+  const a_classes = "underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
   return (
     <BaseModal title="How to play" isOpen={isOpen} handleClose={handleClose}>
       <p className="text-sm text-gray-500 dark:text-gray-300">
@@ -98,6 +99,13 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The character ] is not in the word in any spot.
+      </p>
+
+      <p className="mt-6 text-sm text-gray-500 dark:text-gray-300">
+        You can play all 14 Codle puzzles (past and future) by visiting the URL {' '}
+        <a href="https://codle.herokuapp.com/examples/0" target="_blank" className={a_classes}>codle.herokuapp.com/examples/0</a> {' '}
+        and replacing the 0 at the end with a number between 0 and 13 inclusive. 
+        I will update the site with more puzzles in the future!
       </p>
 
       <p className="mt-6 italic text-sm text-gray-500 dark:text-gray-300">

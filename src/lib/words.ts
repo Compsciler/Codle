@@ -87,6 +87,14 @@ export const localeAwareUpperCase = (text: string) => {
 }
 
 export const getWordBySolutionIndex = (solutionIndex: number) => {
+  if (solutionIndex < 0 || solutionIndex >= WORDS.length) {
+    return {
+      solution: '',
+      clue: '',
+      code: '',
+      solutionIndex: -1,
+    }
+  }
   return {
     solution: localeAwareUpperCase(WORDS[solutionIndex].solution),
     clue: WORDS[solutionIndex].clue,

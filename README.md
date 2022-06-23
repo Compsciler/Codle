@@ -1,41 +1,37 @@
 # Codle
 
-This is an programming-based Wordle variant where the answer is a special character-heavy code snippet. Made using React, Typescript, Tailwind, Node.js, Express, and Mongoose.
+Guess the "word" (code snippet) in 8 tries. After each guess, the color of the tiles will
+change to show how close your guess was to the word.
 
-[**Daily game link**](https://codle.herokuapp.com/)
+The word is taken from a substring within a line of code. 
+However, the code is first condensed:
 
-Demo game links: 
-- [Demo game 0](https://codle.herokuapp.com/examples/0)
-- [Demo game 1](https://codle.herokuapp.com/examples/1)
+1. All whitespace is removed
+2. Consecutive alphanumeric/underscore characters are replaced by a single 'A'
 
-## Build and run
+The chosen word will be <strong>special character-heavy</strong> (at most 1 'A').
+You will be given a clue to the repository or general context from where the code was from,
+as well as the programming language.
 
-### To Run Locally:
+For example, let the line of code be
 
-Clone the repository and perform the following command line actions:
+`console.log("H3llo world_");`
 
-```bash
-$> cd codle
-$> npm install
-$> npm run start
-```
+This would condense down to
 
-### To build/run docker container:
+`A.A("A");`
 
-#### Development
+with clue "Greetings (JavaScript)."
+The following word can be taken from this string: 
 
-```bash
-$> docker build -t codle:dev -f docker/Dockerfile .
-$> docker run -d -p 3000:3000 --name codle-dev codle:dev
-```
+`("A")`
 
-Open [http://localhost:3000](http://localhost:3000) in browser.
 
-#### Production
+[**Play the daily game here!**](https://rebrand.ly/codle)
 
-```bash
-$> docker build --target=prod -t codle:prod -f docker/Dockerfile .
-$> docker run -d -p 80:8080  --name codle-prod codle:prod
-```
+You can play all 14 Codle puzzles (past and future) by visiting the URL 
+<a href="https://codle.herokuapp.com/examples/0" target="_blank">codle.herokuapp.com/examples/0</a> 
+and replacing the 0 at the end with a number between 0 and 13 inclusive. 
+I will update the site with more puzzles in the future!
 
-Open [http://localhost](http://localhost) in browser.
+This is one of the Wordle variants I have made. The other games and instructions for creating your own Wordle variant can be found [here](https://github.com/Compsciler/Wordle-With-Score-Database/).

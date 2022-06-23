@@ -71,12 +71,15 @@ function App() {
     if (!exampleIds.includes(id)) {
       isReturningExampleNotFoundPage = true
     }
-    if (!Number.isNaN(id) && id >= 0) {
+    if (!Number.isNaN(id)) {
       const exampleSolutionAndIndex = getWordBySolutionIndex(id)
       exampleSolution = exampleSolutionAndIndex.solution
       exampleClue = exampleSolutionAndIndex.clue
       exampleCode = exampleSolutionAndIndex.code
       exampleSolutionIndex = exampleSolutionAndIndex.solutionIndex
+      if (exampleSolutionIndex === -1) {
+        isReturningExampleNotFoundPage = true
+      }
     }
   }
   const solution =
@@ -381,7 +384,11 @@ function App() {
   }
 
   if (isReturningExampleNotFoundPage) {
-    return <h1>ERROR: EXAMPLE NOT FOUND</h1>
+    return (
+      <p className="flex justify-center mt-4 dark:text-white text-lg">
+        ERROR: EXAMPLE NOT FOUND
+      </p>
+    )
   }
 
   return (
