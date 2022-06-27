@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'https://codle.herokuapp.com/api/scores'
+const baseUrl = 'https://localhost:3001/api/scores'
 
 /*
 const getAll = () => {

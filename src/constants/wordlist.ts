@@ -3,6 +3,7 @@ const formatLink = (text: string, href: string) => {
 }
 
 export const WORDS = [
+  {solution: '("A")', clue: 'Greetings (JavaScript)', code: 'console.log<strong>("Hello world")</strong>;'},
   {solution: ';A++)', clue: 'Common syntax (C++, C#, or Java)', code: 'for (int candles = 0; candles < 48<strong>; candles++)</strong> {'},
   {solution: '->A!=', clue: 'Linked list implementation (C++)', code: 'while (curr<strong>->next !=</strong> nullptr) {'},
   {solution: '/:A\')', clue: 'React Router DOM usage (Codle App.tsx; TypeScript)', code: 'const exampleMatch = useMatch(\'/examples<strong>/:id\')</strong>'},
