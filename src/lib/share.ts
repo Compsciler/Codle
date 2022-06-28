@@ -27,7 +27,7 @@ export const shareStatus = (
     generateEmojiGrid(
       solution,
       guesses,
-      getEmojiTiles(isDarkMode, isHighContrastMode)
+      getEmojiTiles(false, isHighContrastMode)
     ) + '\n\n' +
     gameUrl
 
