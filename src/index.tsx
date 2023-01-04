@@ -13,6 +13,7 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/examples/:id" element={<App />} />
+          <Route path="/random" element={<App />} />
         </Routes>
       </Router>
     </AlertProvider>

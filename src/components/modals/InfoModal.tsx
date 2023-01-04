@@ -16,7 +16,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </p>
       <br />
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The word is taken from a substring within a line of code. 
+        The word is taken from a substring within a line of code.
         However, the code is first condensed:
       </p>
       <ol className="text-sm text-gray-500 dark:text-gray-300">
@@ -42,9 +42,9 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         with clue "Greetings (JavaScript)."
       </p>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The following word can be taken from this string: 
+        The following word can be taken from this string:
       </p>
-      
+
       <div className="flex justify-center mb-1 mt-4">
         <Cell value="(" />
         <Cell value="&quot;" />
@@ -104,7 +104,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       <p className="mt-6 text-sm text-gray-500 dark:text-gray-300">
         You can play all 14 Codle puzzles (past and future) by visiting the URL {' '}
         <a href="https://codle.herokuapp.com/examples/0" target="_blank" className={a_classes}>codle.herokuapp.com/examples/0</a> {' '}
-        and replacing the 0 at the end with a number between 0 and 13 inclusive. 
+        and replacing the 0 at the end with a number between 0 and 13 inclusive.
         I will update the site with more puzzles in the future!
       </p>
 

@@ -12,6 +12,7 @@ type Props = {
   status?: CharStatus
   onClick: (value: string) => void
   isRevealing?: boolean
+  solution: string
 }
 
 export const Key = ({
@@ -21,6 +22,7 @@ export const Key = ({
   value,
   onClick,
   isRevealing,
+  solution,
 }: Props) => {
   const keyDelayMs = REVEAL_TIME_MS * solution.length
   const isHighContrast = getStoredIsHighContrastMode()

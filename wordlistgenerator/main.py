@@ -10,10 +10,12 @@ new_word_list_file = 'constants/wordlist.json'
 old_valid_guesses_json_file = 'constants/oldvalidGuesses.json'
 new_valid_guesses_file = 'constants/validGuesses.json'
 
+
 def get_word_list(old_word_list):
     new_word_list = []
     # TODO
     return new_word_list
+
 
 old_word_list = json_file_to_list(old_word_list_json_file)
 new_word_list = get_word_list(old_word_list)
