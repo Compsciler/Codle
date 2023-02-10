@@ -8,7 +8,7 @@ const webShareApiDeviceTypes: string[] = ['mobile', 'smarttv', 'wearable']
 const parser = new UAParser()
 const browser = parser.getBrowser()
 const device = parser.getDevice()
-const gameUrl = 'codle.netlify.app'
+const gameUrl = 'codle0.netlify.app'
 
 export const shareStatus = (
   solution: string,
