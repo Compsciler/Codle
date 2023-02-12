@@ -30,7 +30,7 @@ The following word can be taken from this string:
 [**Play the daily game here!**](https://codle0.netlify.app)
 
 You can play all 14 Codle puzzles (past and future) by visiting the URL 
-<a href="https://codle.herokuapp.com/examples/0" target="_blank">codle.herokuapp.com/examples/0</a> 
+<a href="https://codle0.netlify.app/examples/0" target="_blank">codle0.netlify.app/examples/0</a> 
 and replacing the 0 at the end with a number between 0 and 13 inclusive. 
 I will update the site with more puzzles in the future!
 
